@@ -1,0 +1,16 @@
+{
+	"sqltools.useNodeRuntime": true,
+	"sqltools.connections": [
+		{
+			"previewLimit": 50,
+			"driver": "SQLite",
+			"name": "MCL-Estimating",
+			"database": "db/Estimating.db"
+		}
+	],
+	"mypy-type-checker.args": [
+		"--disallow-untyped-calls",
+		"--disallow-untyped-defs"
+	],
+	"python.envFile": "${workspaceFolder}/.env"
+}
