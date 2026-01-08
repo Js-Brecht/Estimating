@@ -1,15 +1,5 @@
-use floem::{views::button, IntoView};
-use floem::prelude::*;
-
-fn app_view() -> impl IntoView {
-    let mut counter = RwSignal::new(0);
-    (
-        "Value: ",
-        button("Increment"),
-        button("Decrement"),
-    )
-}
+use estimating::launch_app;
 
 fn main() {
-    floem::launch(app_view);
+    launch_app();
 }
