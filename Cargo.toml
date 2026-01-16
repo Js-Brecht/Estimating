@@ -4,4 +4,13 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-floem = "0.2.0"
+async-trait = "0.1.89"
+diesel = { version = "2.3.5", features = ["sqlite", "postgres", "r2d2"] }
+diesel_migrations = "2.3.1"
+dotenvy = "0.15.7"
+r2d2 = "0.8.10"
+slint = "1.14.1"
+tokio = { version = "1.49.0", features = ["rt-multi-thread", "macros"] }
+
+[build-dependencies]
+slint-build = "1.14.1"
