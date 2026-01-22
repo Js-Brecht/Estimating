@@ -1,5 +1,5 @@
-use estimating::launch_app;
 
-fn main() {
-    launch_app();
+#[tokio::main]
+async fn main() {
+    estimating::launch().await.expect("Application failed to launch!");
 }

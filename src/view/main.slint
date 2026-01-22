@@ -1,0 +1,27 @@
+import { AboutSlint, VerticalBox, Button } from "std-widgets.slint";
+
+export struct AppState {
+    value: string,
+}
+
+export component MainWindow inherits Window {
+    in-out property <AppState> app-state: { value: "Hello, world" };
+
+    callback get-state() -> AppState;
+
+    VerticalBox {
+        Button {
+            text: "Click me";
+            clicked => {
+                app-state = get-state();
+            }
+        }
+        label := Text {
+            horizontal-alignment: center;
+            text: app-state.value;
+        }
+        AboutSlint {
+            preferred-height: 150px;
+        }
+    }
+}

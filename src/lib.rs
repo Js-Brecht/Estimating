@@ -1,20 +1,28 @@
-use floem::IntoView;
-use floem::prelude::*;
-use floem::views::{Decorators, button, dyn_view};
+use dotenvy::dotenv;
+use slint::ComponentHandle;
+use std::env;
+use std::error::Error;
 
-fn app_view() -> impl IntoView {
-    let mut counter = RwSignal::new(0);
-    (
-        dyn_view(move || format!("Value: {}", counter)),
-        (
-            button("Increment").action(move || counter += 1),
-            button("Decrement").action(move || counter -= 1),
-        )
-            .style(|s| s.flex_row().gap(6)),
-    )
-        .style(|s| s.flex_col().gap(6).items_center())
-}
+pub mod db;
+use db::{Database, SqliteDatabase};
 
-pub fn launch_app() {
-    floem::launch(app_view);
+slint::include_modules!();
+
+pub async fn launch() -> Result<(), Box<dyn Error>>{
+    // Load environment variables from a `.env` file if present
+    dotenv().ok();
+    let database_url = env::var("DATABASE_URL").expect("The environment variable `DATABASE_URL` must be set");
+
+    // Choose your backend here. Later you can swap `SqliteDatabase` with `PostgresDatabase`
+    // once implemented.
+    let db = SqliteDatabase::new(&database_url);
+
+    // Run migrations at startup (blocking, but only once)
+    db.run_migrations();
+
+    let ui = MainWindow::new()?;
+
+    ui.run()?;
+
+    Ok(())
 }

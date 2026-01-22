@@ -6,14 +6,14 @@
 DROP TABLE IF EXISTS `month_list`;
 CREATE TABLE `month_list`
  (
-	`val`				INTEGER PRIMARY KEY AUTOINCREMENT, 
+	`val`				INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
 	`title`				varchar NOT NULL
 );
 
 -- TABLE bid_class
 DROP TABLE IF EXISTS `bid_class`;
 CREATE TABLE `bid_class` (
-	`bid_class_id`		INTEGER PRIMARY KEY AUTOINCREMENT,
+	`bid_class_id`		INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	`bid_class_name`	varchar NOT NULL,
 	`bid_class_desc`	varchar NOT NULL
 );
@@ -23,7 +23,7 @@ CREATE INDEX `bid_class_group_id_idx` ON `bid_class` (`bid_class_id`);
 -- TABLE state
 DROP TABLE IF EXISTS `state`;
 CREATE TABLE `state` (
-	`state_id`			INTEGER PRIMARY KEY AUTOINCREMENT,
+	`state_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	`state_initial`		varchar NOT NULL,
 	`state_name`		varchar NOT NULL
 );
@@ -35,7 +35,7 @@ CREATE UNIQUE INDEX `state_state_name_idx` ON `state` (`state_name`);
 DROP TABLE IF EXISTS `region`;
 CREATE TABLE `region`
  (
-	`region_id`			INTEGER PRIMARY KEY AUTOINCREMENT,
+	`region_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	`region_name`		varchar NOT NULL
 );
 -- CREATE INDEXES ...
@@ -45,7 +45,7 @@ CREATE UNIQUE INDEX `region_region_name_idx` ON `region` (`region_name`);
 -- TABLE city
 DROP TABLE IF EXISTS `city`;
 CREATE TABLE `city` (
-	`city_id`			INTEGER PRIMARY KEY AUTOINCREMENT,
+	`city_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	`city_name`			varchar NOT NULL,
 	`state_id`			INTEGER REFERENCES `state`(`state_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
 	`region_id`			INTEGER REFERENCES `region`(`region_id`) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -59,7 +59,7 @@ CREATE INDEX `city_state_id_idx` ON `city` (`state_id`);
 -- TABLE users 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-	`sid`				varchar PRIMARY KEY NOT NULL,
+	`sid`				varchar NOT NULL PRIMARY KEY NOT NULL,
 	`user_name`			varchar NOT NULL,
 	`full_name`			varchar NOT NULL,
 	`email`				varchar
@@ -71,16 +71,16 @@ CREATE INDEX `users_sid_idx` ON `users` (`sid`);
 DROP TABLE IF EXISTS `jobs`;
 CREATE TABLE `jobs`
  (
-	`job_id`			INTEGER PRIMARY KEY AUTOINCREMENT, 
-	`job_name`			varchar, 
+	`job_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+	`job_name`			varchar NOT NULL, 
 	`city_id`			INTEGER REFERENCES `city`(`city_id`) ON DELETE RESTRICT ON UPDATE CASCADE, 
 	`addendums`			varchar, 
-	`bid_amount`		REAL, 
+	`bid_amount`		REAL DEFAULT 0, 
 	`bid_date`			DateTime, 
 	`bid_time`			DateTime, 
 	`job_walk_date`		DateTime, 
 	`job_walk_time`		DateTime, 
-	`bid_status`		INTEGER DEFAULT Null, 
+	`bid_status`		INTEGER DEFAULT NULL, 
 	`leed_tracking`		INTEGER NOT NULL DEFAULT FALSE, 
 	`demolition`		INTEGER NOT NULL DEFAULT FALSE, 
 	`acm`				INTEGER NOT NULL DEFAULT FALSE, 
@@ -102,8 +102,8 @@ CREATE UNIQUE INDEX `jobs_job_name_idx` ON `jobs` (`job_name`);
 DROP TABLE IF EXISTS `job_notes`;
 CREATE TABLE `job_notes`
  (
-	`note_id`			INTEGER PRIMARY KEY AUTOINCREMENT, 
-	`job_id`			INTEGER REFERENCES `jobs`(`job_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
+	`note_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+	`job_id`			INTEGER NOT NULL REFERENCES `jobs`(`job_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
 	`created`			DateTime NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 	`user`				varchar NOT NULL, 
 	`note`				TEXT NOT NULL
@@ -114,8 +114,8 @@ CREATE INDEX `job_notes_job_id_idx` ON `job_notes` (`job_id`);
 -- TABLE contractors
 DROP TABLE IF EXISTS `contractors`;
 CREATE TABLE `contractors` (
-	`contractor_id`		INTEGER PRIMARY KEY AUTOINCREMENT,
-	`contractor_name`	varchar,
+	`contractor_id`		INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`contractor_name`	varchar NOT NULL,
 	`acronym`			varchar,
 	`address1`			varchar,
 	`address2`			varchar,
@@ -142,9 +142,9 @@ CREATE UNIQUE INDEX `contractors_company_name_idx` ON `contractors` (`contractor
 DROP TABLE IF EXISTS `contractor_contacts`;
 CREATE TABLE `contractor_contacts`
  (
-	`contact_id`		INTEGER PRIMARY KEY AUTOINCREMENT, 
-	`contractor_id`		INTEGER REFERENCES `contractors`(`contractor_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
-	`first_name`		varchar, 
+	`contact_id`		INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+	`contractor_id`		INTEGER NOT NULL REFERENCES `contractors`(`contractor_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
+	`first_name`		varchar NOT NULL, 
 	`middle_name`		varchar, 
 	`last_name`			varchar, 
 	`extension`			varchar, 
@@ -190,8 +190,8 @@ CREATE INDEX `contractor_groups_group_id_idx` ON `contractor_groups` (`group_id`
 DROP TABLE IF EXISTS `cop`;
 CREATE TABLE `cop`
  (
-	`cop_id`			INTEGER PRIMARY KEY AUTOINCREMENT, 
-	`job_id`			INTEGER REFERENCES `jobs`(`job_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
+	`cop_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+	`job_id`			INTEGER NOT NULL REFERENCES `jobs`(`job_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
 	`cop_num`			INTEGER DEFAULT 0, 
 	`rfi`				varchar, 
 	`title`				varchar, 
@@ -204,8 +204,8 @@ CREATE INDEX `cop_job_id_idx` ON `cop` (`job_id`);
 DROP TABLE IF EXISTS `cop_rev`;
 CREATE TABLE `cop_rev`
  (
-	`rev_id`			INTEGER PRIMARY KEY AUTOINCREMENT, 
-	`cop_id`			INTEGER REFERENCES `cop`(`cop_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
+	`rev_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+	`cop_id`			INTEGER NOT NULL REFERENCES `cop`(`cop_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
 	`rev`				INTEGER DEFAULT 0, 
 	`rev_date`			DateTime NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 	`amount`			REAL DEFAULT 0, 
@@ -218,9 +218,9 @@ CREATE INDEX `cop_rev_cop_id_idx` ON `cop_rev` (`cop_id`);
 DROP TABLE IF EXISTS `cop_notes`;
 CREATE TABLE `cop_notes`
  (
-	`note_id`			INTEGER PRIMARY KEY AUTOINCREMENT, 
-	`cop_id`			INTEGER REFERENCES `cop`(`cop_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
-	`rev_id`			INTEGER REFERENCES `cop_rev`(`rev_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
+	`note_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+	`cop_id`			INTEGER NOT NULL REFERENCES `cop`(`cop_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
+	`rev_id`			INTEGER NOT NULL REFERENCES `cop_rev`(`rev_id`) ON DELETE CASCADE ON UPDATE CASCADE, 
 	`user_sid`			varchar REFERENCES `users`(`sid`) ON DELETE SET NULL ON UPDATE CASCADE, 
 	`created`			DateTime NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 	`note`				TEXT NOT NULL
