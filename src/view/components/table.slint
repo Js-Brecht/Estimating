@@ -1,0 +1,117 @@
+import { VerticalBox, HorizontalBox, Button, ScrollView } from "std-widgets.slint";
+
+export struct TableColumn {
+    title: string,
+    width: length,
+}
+
+export component TableCell {
+    in property <TableColumn> column;
+    in property <int> col-index;
+    in property <int> row-index;
+    in property <color> background: Math.mod(row-index, 2) == 0 ? #ffffff : #f5f5f5;
+    in property <LayoutAlignment> alignment: start;
+    in property <length> border-width: 1px;
+    in property <color> border-color: #e0e0e0;
+
+    width: column.width;
+    height: 100%;
+
+    // Visual Styling
+    Rectangle {
+        width: parent.width;
+        height: parent.height;
+        border-width: root.border-width;
+        border-color: root.border-color;
+        background: root.background;
+
+        HorizontalLayout {
+            padding: 4px;
+            alignment: root.alignment;
+
+            @children
+        }
+    }
+}
+
+export component TableRow {
+    in property <int> row-index;
+    in property <length> row-height;
+
+    height: row-height;
+
+    HorizontalLayout {
+        width: 100%;
+        height: parent.height;
+        alignment: start;
+
+        @children
+    }
+}
+
+component TableHeaders {
+    in property <[TableColumn]> columns;
+    in property <int> col-index;
+
+    TableRow {
+        row-height: 32px;
+        row-index: -1;
+
+        for col[idx] in columns: TableCell {
+            column: root.columns[idx];
+            col-index: root.col-index;
+            row-index: -1;
+            background: #e8e8e8;
+            border-color: #d0d0d0;
+            alignment: center;
+
+            headerTitle := Text { 
+                text: col.title;
+                font-weight: 600;
+                color: #333333;
+            }
+        }
+    }
+}
+
+
+export component Table {
+    in-out property <[TableColumn]> columns;
+    in property <bool> show-header: true;
+
+    accessible-role: table;
+
+    width: 100%;
+    height: 100%;
+
+    VerticalLayout {
+        spacing: 0;
+        alignment: start;
+
+        if show-header: TableHeaders {
+            columns: root.columns;
+        }
+        
+
+        // Rows
+        Rectangle {
+            border-width: 1px;
+            border-color: gray;
+
+            ScrollView {
+                width: 100%;
+                height: 100%;
+
+                VerticalLayout {
+                    height: self.preferred-height;
+                    width: self.preferred-height;
+                    spacing: 0;
+                    alignment: start;
+
+                    @children
+                }
+            }
+        }
+
+    }
+}

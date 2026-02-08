@@ -1,0 +1,63 @@
+import { StandardTableView } from "std-widgets.slint";
+import { Page } from "./components/page.slint";
+import { Table, TableRow, TableCell, TableColumn } from "./components/table.slint";
+
+export struct JobsListPageItem {
+    job_name: string,
+}
+
+export global JobsListPageAdapter {
+    in-out property <[JobsListPageItem]> job-list;
+
+    callback fetch-jobs(page: int);
+}
+
+
+export component JobsListPage inherits Page {
+    title: "Jobs List";
+    description: "A list of jobs.";
+    
+    Timer {
+        interval: 100ms;
+        running: true;
+        triggered => {
+            JobsListPageAdapter.fetch-jobs(1);
+            self.running = false;
+        }
+    }
+
+    VerticalLayout {
+        jobsTable := Table {
+            columns: [
+                { title: "Job Name", width: 300px }
+            ];
+
+            height: 300px;
+            width: 400px;
+
+            for row[index] in JobsListPageAdapter.job-list: TableRow {
+                row-height: 24px;
+
+                TableCell {
+                    column: jobsTable.columns[0];
+                    row-index: index;
+                    Text {
+                        text: row.job_name;
+                    }
+                }
+            }
+
+        }
+
+        // StandardTableView {
+        //     init => {
+        //         debug("Initializing StandardTableView for JobsListPage");
+        //     }
+        //     columns: [
+        //         { title: "Job Name" },
+        //     ];
+        //     rows: JobsListPageAdapter.job-list;
+        // }
+        
+    }
+}

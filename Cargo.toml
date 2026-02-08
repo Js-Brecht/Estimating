@@ -3,14 +3,18 @@ name = "estimating"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = ["sqlite"]
+sqlite = ["diesel/sqlite"]
+postgres = ["diesel/postgres"]
+
 [dependencies]
 async-trait = "0.1.89"
-diesel = { version = "2.3.5", features = ["sqlite", "postgres", "r2d2"] }
+chrono = "0.4.43"
+diesel = { version = "2.3.5", features = ["sqlite", "postgres", "r2d2", "chrono"] }
 diesel_migrations = "2.3.1"
+dioxus = { version = "0.7.3", features = ["desktop", "fullstack", "mobile", "native", "router", "server", "ssr"] }
 dotenvy = "0.15.7"
+freya = { version = "0.3.4", features = ["skia", "devtools"] }
 r2d2 = "0.8.10"
-slint = "1.14.1"
 tokio = { version = "1.49.0", features = ["rt-multi-thread", "macros"] }
-
-[build-dependencies]
-slint-build = "1.14.1"

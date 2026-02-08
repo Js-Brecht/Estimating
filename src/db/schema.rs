@@ -133,7 +133,7 @@ diesel::table! {
         arsenic -> Integer,
         mold -> Integer,
         soil -> Integer,
-        created_date -> Nullable<Timestamp>,
+        created -> Nullable<Timestamp>,
         created_by -> Nullable<Text>,
     }
 }

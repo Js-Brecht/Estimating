@@ -90,7 +90,7 @@ CREATE TABLE `jobs`
 	`arsenic`			INTEGER NOT NULL DEFAULT FALSE, 
 	`mold`				INTEGER NOT NULL DEFAULT FALSE, 
 	`soil`				INTEGER NOT NULL DEFAULT FALSE, 
-	`created_date`		DateTime DEFAULT CURRENT_TIMESTAMP, 
+	`created`		    DateTime DEFAULT NULL,
 	`created_by`		varchar REFERENCES `users`(`sid`) ON DELETE SET NULL ON UPDATE CASCADE
 );
 -- CREATE INDEXES ...

@@ -1,12 +1,29 @@
+#![allow(dead_code)]
+#![allow(unused)]
+#![allow(non_snake_case)]
+
 use dotenvy::dotenv;
-use slint::ComponentHandle;
 use std::env;
 use std::error::Error;
+use std::rc::Rc;
+use std::sync::{Arc, Mutex};
+use dioxus::prelude::*;
 
-pub mod db;
-use db::{Database, SqliteDatabase};
+mod db;
+use crate::db::{DatabaseBackend, Database};
 
-slint::include_modules!();
+mod model;
+use crate::model::Job;
+
+mod vm;
+use crate::vm::{JobsListViewModel};
+
+mod repository;
+use crate::repository::jobs_repo::JobsRepository;
+
+mod view;
+use crate::view::Route;
+
 
 pub async fn launch() -> Result<(), Box<dyn Error>>{
     // Load environment variables from a `.env` file if present
@@ -15,14 +32,18 @@ pub async fn launch() -> Result<(), Box<dyn Error>>{
 
     // Choose your backend here. Later you can swap `SqliteDatabase` with `PostgresDatabase`
     // once implemented.
-    let db = SqliteDatabase::new(&database_url);
+    let db = DatabaseBackend::new(&database_url);
 
     // Run migrations at startup (blocking, but only once)
     db.run_migrations();
 
-    let ui = MainWindow::new()?;
-
-    ui.run()?;
+    dioxus::launch(App);
 
     Ok(())
+}
+
+fn App() -> Element {
+    rsx!{
+        Router::<Route> {}
+    }
 }

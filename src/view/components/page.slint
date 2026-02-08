@@ -1,0 +1,21 @@
+import { VerticalBox, HorizontalBox } from "std-widgets.slint";
+
+export component Page inherits VerticalBox {
+    in property <string> title: "Title";
+    in property <string> description: "Description";
+
+    accessible-role: tab-panel;
+    accessible-label: title;
+
+    HorizontalBox {
+        Text {
+            font-size: 20px;
+            text <=> title;
+        }
+
+        // Spacer
+        Rectangle { }
+    }
+
+    @children
+}

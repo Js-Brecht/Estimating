@@ -9,6 +9,7 @@ pipenv = "*"
 mypy = "*"
 pandas = "*"
 pydantic = "*"
+datetime = "*"
 
 [dev-packages]
 

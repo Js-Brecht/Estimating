@@ -1,0 +1,33 @@
+import { AboutSlint, VerticalBox, Button, StandardTableView, TabWidget } from "std-widgets.slint";
+import { JobsListPage, JobsListPageAdapter, JobsListPageItem } from "./jobs-list.slint";
+
+export { JobsListPageAdapter, JobsListPageItem }
+
+export component App inherits Window {
+    property <string> open-page: "jobs-list";
+
+    HorizontalLayout {
+        
+        Rectangle {
+            border-color: red;
+            border-width: 1px;
+                
+            VerticalBox {
+                width: 100px;
+
+
+                Button {
+                    height: 30px;
+                    text: "Jobs List";
+                    clicked => {
+                        open-page = "jobs-list";
+                    }
+                }
+            }
+        }
+
+        VerticalLayout {
+            if open-page == "jobs-list": JobsListPage {}
+        }
+    }
+}

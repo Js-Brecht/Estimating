@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic.alias_generators import to_snake
 from mdb_parser import MDBParser
 from typing import Any
@@ -21,7 +22,22 @@ def transform_value(value: str) -> str:
                 .replace("island", "region")
                 .replace("Timestamp", "Created")
                 .replace("COPID", "CopID")
+                .replace("CreatedDate", "created")
         ).replace("address_1", "address2").replace("address_2", "address1")
+    return value
+
+def tranform_column(column_name: str, value: str) -> Any:
+    dt_columns = ["bid_date", "bid_time", "job_walk_date", "job_walk_time", "rev_date", "created"]
+
+    if column_name in dt_columns:
+        try:
+            if value == "":
+                return None
+            parsed_dt = datetime.strptime(value, "%m/%d/%y %H:%M:%S")
+            return parsed_dt.strftime("%Y-%m-%dT%H:%M:%S")
+        except Exception:
+            return value
+
     return value
 
 def clear_database(conn: Any, schema_path: str) -> bool:
@@ -133,6 +149,8 @@ def main() -> None:
                     replacement = transform_value(col)
                     if replacement != col:
                         rename_map[col] = replacement
+ 
+                    df[col] = df[col].apply(lambda val: tranform_column(replacement, val))
             
                 df.rename(columns=rename_map, inplace=True)
 
@@ -148,6 +166,7 @@ def main() -> None:
                 cursor.execute("PRAGMA foreign_keys=OFF;")
 
                 cols = df.columns
+
                 records = list(df.itertuples(index=False, name=None))
                 insert_stmt = f"INSERT INTO {name} ({', '.join(cols)}) VALUES ({', '.join(['?' for _ in cols])})"
                 cursor.executemany(insert_stmt, records)

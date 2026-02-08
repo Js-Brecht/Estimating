@@ -3,7 +3,7 @@ use std::sync::Arc;
 use async_trait::async_trait;
 use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, CustomizeConnection, Pool};
-use diesel::sqlite::SqliteConnection;
+pub use diesel::sqlite::SqliteConnection;
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use tokio::task;
 
@@ -11,11 +11,11 @@ use super::{Database, ResultError, DatabaseErrorKind, PoolError};
 
 const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/sqlite");
 
-/// Enforce foreign keys and other pragmas on each new SQLite connection from the pool.
 #[derive(Debug)]
 struct SqliteConnectionCustomizer;
 
 impl CustomizeConnection<SqliteConnection, PoolError> for SqliteConnectionCustomizer {
+    /// Enforce foreign keys and other pragmas on each new SQLite connection from the pool.
     fn on_acquire(&self, conn: &mut SqliteConnection) -> Result<(), PoolError> {
         diesel::sql_query("PRAGMA foreign_keys = ON;")
             .execute(conn)
